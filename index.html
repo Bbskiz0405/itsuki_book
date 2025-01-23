@@ -5,50 +5,69 @@
 <title>王月之書</title>
 <style>
   body {
-  text-align: center;
-  padding-top: 50px;
-  background-image: url('background.jpg'); /* 背景圖片 */
-  background-size: cover; /* 確保背景圖片覆蓋整個頁面 */
-  color: white; /* 文字顏色 */
-  font-family: 'Arial', sans-serif; /* 字體 */
-}
-
-h1 {
-  margin: 0;
-  font-size: 48px; /* 主標題大小 */
-  color: white; /* 更改顏色為白色 */
-  text-shadow: 2px 2px 4px #000000; /* 添加黑色陰影 */
-}
-
-p {
-  font-size: 24px; /* 子標題大小 */
-  color: white; /* 更改顏色為白色 */
-  text-shadow: 1px 1px 2px #000000; /* 添加黑色陰影 */                
-}
-
+    text-align: center;
+    padding-top: 50px;
+    background-color: #f5f5f5; /* 背景色 */
+    font-family: Arial, sans-serif;
+  }
+  h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+  }
+  p {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px; /* 容器高度，可以根據需求調整 */
+  }
+  img.answer-image {
+    max-width: 90%;
+    max-height: 100%;
+    display: none; /* 預設答案圖片不顯示 */
+  }
+  button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  img.button-image {
+    width: 150px;
+    height: auto;
+  }
 </style>
 </head>
 <body>
 <h1>王月之書</h1>
 <p>當你覺得徬徨不安時 可以像玥光尋求協助</p>
-<img id="answerImage" src="default.jpg" alt="Answer Image">
-<button onclick="showRandomAnswer()" style="border: none; background: none;">
-  <img src="button-image.jpg" alt="揭示答案" style="width: 100px; height: auto;">
+<div class="image-container">
+  <img id="answerImage" class="answer-image" alt="答案圖片">
+</div>
+<br>
+<button onclick="showRandomAnswer()">
+  <img src="tool_img/button-image.jpg" alt="揭示答案" class="button-image">
 </button>
 
-
 <script>
-const answers = [
-  'image1.jpg', 
-  'image2.jpg', 
-  'image3.jpg'
-  // 更多圖片路徑
-];
+  // 定義答案圖片的路徑
+  const answers = [
+    'img/1.png',
+    'img/2.png',
+    'img/3.png',
+    'img/4.png'
+  ];
 
-function showRandomAnswer() {
-  const randomIndex = Math.floor(Math.random() * answers.length);
-  document.getElementById('answerImage').src = answers[randomIndex];
-}
+  // 顯示隨機答案圖片
+  function showRandomAnswer() {
+    const randomIndex = Math.floor(Math.random() * answers.length);
+    const answerImage = document.getElementById('answerImage');
+    answerImage.src = answers[randomIndex];
+    answerImage.style.display = 'block'; // 按下按鈕後顯示答案圖片
+  }
 </script>
 </body>
 </html>
