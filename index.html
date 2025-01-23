@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>王月之書</title>
+<style>
+  body {
+  text-align: center;
+  padding-top: 50px;
+  background-image: url('background.jpg'); /* 背景圖片 */
+  background-size: cover; /* 確保背景圖片覆蓋整個頁面 */
+  color: white; /* 文字顏色 */
+  font-family: 'Arial', sans-serif; /* 字體 */
+}
+
+h1 {
+  margin: 0;
+  font-size: 48px; /* 主標題大小 */
+  color: white; /* 更改顏色為白色 */
+  text-shadow: 2px 2px 4px #000000; /* 添加黑色陰影 */
+}
+
+p {
+  font-size: 24px; /* 子標題大小 */
+  color: white; /* 更改顏色為白色 */
+  text-shadow: 1px 1px 2px #000000; /* 添加黑色陰影 */
+}
+
+</style>
+</head>
+<body>
+<h1>王月之書</h1>
+<p>當你覺得徬徨不安時 請來尋求真理</p>
+<img id="answerImage" src="default.jpg" alt="Answer Image">
+<button onclick="showRandomAnswer()" style="border: none; background: none;">
+  <img src="button-image.jpg" alt="揭示答案" style="width: 100px; height: auto;">
+</button>
+
+
+<script>
+const answers = [
+  'image1.jpg', 
+  'image2.jpg', 
+  'image3.jpg'
+  // 更多圖片路徑
+];
+
+function showRandomAnswer() {
+  const randomIndex = Math.floor(Math.random() * answers.length);
+  document.getElementById('answerImage').src = answers[randomIndex];
+}
+</script>
+</body>
+</html>
