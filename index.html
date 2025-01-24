@@ -10,6 +10,7 @@
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    position: relative;
   }
   h1 {
     font-size: 48px;
@@ -20,6 +21,14 @@
     font-size: 24px;
     margin-bottom: 40px;
     color: #fff; /* 白色文字 */
+  }
+  .author {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 16px;
+    color: #fff;
+    font-weight: bold;
   }
   .image-container {
     display: flex;
@@ -60,6 +69,7 @@
 </style>
 </head>
 <body>
+<div class="author">作者：我不吃辣</div>
 <h1>王月之書</h1>
 <p>當你覺得徬徨不安時 可以像玥光尋求協助</p>
 <div class="image-container">
@@ -73,12 +83,22 @@
 <button id="nextButton" class="next-button" onclick="showRandomAnswer()">下一張</button>
 
 <script>
-  // 定義答案圖片的路徑
+  // 定義答案圖片的路徑（更新到14張）
   const answers = [
     'img/1.png',
     'img/2.png',
     'img/3.png',
-    'img/4.png'
+    'img/4.png',
+    'img/5.png',
+    'img/6.png',
+    'img/7.png',
+    'img/8.png',
+    'img/9.png',
+    'img/10.png',
+    'img/11.png',
+    'img/12.png',
+    'img/13.png',
+    'img/14.png'
   ];
 
   // 顯示隨機答案圖片
