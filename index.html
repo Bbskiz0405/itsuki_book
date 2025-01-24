@@ -22,31 +22,11 @@
     margin-bottom: 40px;
     color: #fff; /* 白色文字 */
   }
-  .author {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 16px;
-    color: #fff;
-    font-weight: bold;
-  }
-  .qrcode-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column; /* 上下排列 */
-  }
-  .qrcode-container img {
-    width: 300px; /* 調整圖片寬度 */
-    height: auto; /* 確保比例正常 */
-    margin: 0; /* 去除圖片間距 */
-  }
   .image-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 300px; /* 容器高度，可以根據需求調整 */
+    height: 300px; /* 容器高度 */
   }
   img.answer-image {
     max-width: 90%;
@@ -78,14 +58,93 @@
     border-radius: 5px;
     margin-top: 20px; /* 與答案圖片的間距 */
   }
+  /* 側邊抽屜選單樣式 */
+  .menu-container {
+    position: fixed;
+    top: 0;
+    right: -350px; /* 隱藏選單，初始位置在螢幕外 */
+    width: 350px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s ease; /* 平滑移動效果 */
+    z-index: 1000;
+    overflow-y: auto; /* 如果內容超出則可滾動 */
+  }
+  .menu-container h2 {
+    text-align: center;
+    padding: 20px 0;
+    margin: 0;
+    background-color: rgb(254, 150, 137);
+    color: #fff;
+    font-size: 20px;
+  }
+  .menu-container .qrcode-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 30px; /* 圖片間的距離 */
+  }
+  .menu-container .qrcode-container img {
+    width: 300px; /* 調整圖片寬度 */
+    height: auto; /* 確保比例正常 */
+  }
+  .menu-container .author {
+    text-align: center;
+    font-size: 18px;
+    color: rgb(100, 100, 100);
+    margin-top: 20px;
+  }
+  .menu-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgb(254, 150, 137);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 1100;
+  }
+  .menu-button:hover {
+    background-color: #fff;
+    color: rgb(254, 150, 137);
+    border: 1px solid rgb(254, 150, 137);
+  }
+  .overlay {
+    display: none; /* 預設不顯示 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
 </style>
 </head>
 <body>
-<div class="author">作者：我不吃辣</div>
-<div class="qrcode-container">
-  <img src="tool_img/qrcode1.jpeg" alt="QRCode 1">
-  <img src="tool_img/qrcode2.jpeg" alt="QRCode 2">
+
+<!-- 側邊選單按鈕 -->
+<button class="menu-button" onclick="toggleMenu()">相關資料</button>
+
+<!-- 側邊選單 -->
+<div class="menu-container" id="menu">
+  <h2>相關資料</h2>
+  <div class="qrcode-container">
+    <img src="tool_img/qrcode1.jpeg" alt="QRCode 1">
+    <img src="tool_img/qrcode2.jpeg" alt="QRCode 2">
+  </div>
+  <div class="author">作者：我不吃辣</div>
 </div>
+
+<!-- 遮罩層 -->
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- 主內容 -->
 <h1>王月之書</h1>
 <p>當你覺得徬徨不安時 可以像玥光尋求協助</p>
 <div class="image-container">
@@ -99,38 +158,49 @@
 <button id="nextButton" class="next-button" onclick="showRandomAnswer()">下一張</button>
 
 <script>
-  // 定義答案圖片的路徑（包含新增的GIF）
-  const answers = [
-    'img/1.png',
-    'img/2.png',
-    'img/3.png',
-    'img/4.png',
-    'img/5.png',
-    'img/6.png',
-    'img/7.png',
-    'img/8.png',
-    'img/9.png',
-    'img/10.png',
-    'img/11.png',
-    'img/12.png',
-    'img/13.png',
-    'img/14.png',
-    'img/rickroll-roll.gif' // 新增的GIF
-  ];
-
-  // 顯示隨機答案圖片
   function showRandomAnswer() {
+    const answers = [
+      'img/1.png',
+      'img/2.png',
+      'img/3.png',
+      'img/4.png',
+      'img/5.png',
+      'img/6.png',
+      'img/7.png',
+      'img/8.png',
+      'img/9.png',
+      'img/10.png',
+      'img/11.png',
+      'img/12.png',
+      'img/13.png',
+      'img/14.png',
+      'img/rickroll-roll.gif'
+    ];
     const randomIndex = Math.floor(Math.random() * answers.length);
     const answerImage = document.getElementById('answerImage');
     answerImage.src = answers[randomIndex];
-    answerImage.style.display = 'block'; // 顯示答案圖片
+    answerImage.style.display = 'block';
 
-    // 第一次按下時隱藏初始按鈕並顯示下一張按鈕
     const revealButton = document.getElementById('revealButton');
     const nextButton = document.getElementById('nextButton');
     if (revealButton.style.display !== 'none') {
-      revealButton.style.display = 'none'; // 隱藏初始按鈕
-      nextButton.style.display = 'inline-block'; // 顯示下一張按鈕
+      revealButton.style.display = 'none';
+      nextButton.style.display = 'inline-block';
+    }
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById('menu');
+    const overlay = document.getElementById('overlay');
+    const menuButton = document.querySelector('.menu-button');
+    if (menu.style.right === '0px') {
+      menu.style.right = '-350px';
+      overlay.style.display = 'none';
+      menuButton.style.display = 'block';
+    } else {
+      menu.style.right = '0px';
+      overlay.style.display = 'block';
+      menuButton.style.display = 'none';
     }
   }
 </script>
