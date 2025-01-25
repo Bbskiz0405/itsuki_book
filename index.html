@@ -43,7 +43,8 @@
     display: none; /* 預設答案圖片不顯示 */
   }
   .button-container {
-    margin-top: 20px;
+    margin-top: -180px; /* 第一個按鈕向上移動 */
+    position: relative;
   }
   button {
     border: none;
@@ -51,7 +52,7 @@
     cursor: pointer;
   }
   img.button-image {
-    width: 150px;
+    width: 300px; /* 調整按鈕大小 */
     height: auto;
   }
   .next-button {
@@ -63,7 +64,7 @@
     font-size: 16px;
     color: rgb(254, 150, 137);
     border-radius: 5px;
-    margin-top: 20px; /* 與答案圖片的間距 */
+    margin-top: 120px; /* 調整第二個按鈕更靠下 */
   }
   /* 側邊抽屜選單樣式 */
   .menu-container {
@@ -169,46 +170,14 @@
 <script>
   function showRandomAnswer() {
     const answers = [
-      'img/1.png',
-      'img/2.png',
-      'img/3.jpg',
-      'img/4.jpg',
-      'img/5.png',
-      'img/6.png',
-      'img/7.png',
-      'img/8.png',
-      'img/9.png',
-      'img/10.png',
-      'img/11.png',
-      'img/12.png',
-      'img/13.png',
-      'img/14.png',
-      'img/15.png',
-      'img/16.png',
-      'img/17.png',
-      'img/18.png',
-      'img/19.png',
-      'img/20.jpg',
-      'img/21.png',
-      'img/22.png',
-      'img/23.png',
-      'img/24.png',
-      'img/25.jpg',
-      'img/26.jpg',
-      'img/27.jpg',
-      'img/28.jpg',
-      'img/29.jpg',
-      'img/30.jpg',
-      'img/31.jpg',
-      'img/32.jpg',
-      'img/33.jpg',
-      'img/34.jpg',
-      'img/35.jpg',
-      'img/36.jpg',
-      'img/37.jpg',
-      'img/38.jpg',
-      'img/39.jpg',
-      'img/40.jpg',
+      'img/1.png', 'img/2.png', 'img/3.jpg', 'img/4.jpg', 'img/5.png',
+      'img/6.png', 'img/7.png', 'img/8.png', 'img/9.png', 'img/10.png',
+      'img/11.png', 'img/12.png', 'img/13.png', 'img/14.png', 'img/15.png',
+      'img/16.png', 'img/17.png', 'img/18.png', 'img/19.png', 'img/20.jpg',
+      'img/21.png', 'img/22.png', 'img/23.png', 'img/24.png', 'img/25.jpg',
+      'img/26.jpg', 'img/27.jpg', 'img/28.jpg', 'img/29.jpg', 'img/30.jpg',
+      'img/31.jpg', 'img/32.jpg', 'img/33.jpg', 'img/34.jpg', 'img/35.jpg',
+      'img/36.jpg', 'img/37.jpg', 'img/38.jpg', 'img/39.jpg', 'img/40.jpg',
       'img/rickroll-roll.gif'
     ];
     const randomIndex = Math.floor(Math.random() * answers.length);
@@ -219,8 +188,8 @@
     const revealButton = document.getElementById('revealButton');
     const nextButton = document.getElementById('nextButton');
     if (revealButton.style.display !== 'none') {
-      revealButton.style.display = 'none';
-      nextButton.style.display = 'inline-block';
+      revealButton.style.display = 'none'; // 隱藏揭示答案按鈕
+      nextButton.style.display = 'inline-block'; // 顯示下一張按鈕
     }
   }
 
