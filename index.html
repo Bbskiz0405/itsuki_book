@@ -43,7 +43,7 @@
     display: none; /* 預設答案圖片不顯示 */
   }
   .button-container {
-    margin-top: -150px; /* 第一個按鈕向上移動 */
+    margin-top: -250px; /* 第一個按鈕向上移動 */
     position: relative;
   }
   button {
@@ -52,7 +52,7 @@
     cursor: pointer;
   }
   img.button-image {
-    width: 250px; /* 調整按鈕大小 */
+    width: 350px; /* 按鈕圖片放大 */
     height: auto;
   }
   .next-button {
@@ -64,7 +64,7 @@
     font-size: 16px;
     color: rgb(254, 150, 137);
     border-radius: 5px;
-    margin-top: 150px; /* 調整第二個按鈕位置 */
+    margin-top: 300px; /* 調整第二個按鈕位置 */
   }
   .menu-container {
     position: fixed;
@@ -119,6 +119,7 @@
     cursor: pointer;
     z-index: 1100;
     border-radius: 5px;
+    transition: all 0.3s ease;
   }
   .menu-button div {
     width: 30px;
@@ -149,7 +150,7 @@
       font-size: 16px; /* 調整段落字體 */
     }
     img.button-image {
-      width: 180px; /* 縮小按鈕圖片 */
+      width: 200px; /* 縮小按鈕圖片 */
     }
     .next-button {
       font-size: 14px; /* 縮小按鈕文字 */
@@ -227,14 +228,18 @@
       const menu = document.getElementById('menu');
       const overlay = document.getElementById('overlay');
       const menuButton = document.getElementById('menuButton');
+      
       if (menu.style.right === '0px') {
         menu.style.right = '-350px';
         overlay.style.display = 'none';
-        menuButton.style.display = 'block';
+        menuButton.style.display = 'flex'; // 顯示按鈕
+        setTimeout(() => {
+          menuButton.style.justifyContent = 'space-evenly'; // 確保按鈕恢復間距
+        }, 300); // 與選單關閉的動畫時間一致
       } else {
         menu.style.right = '0px';
         overlay.style.display = 'block';
-        menuButton.style.display = 'none';
+        menuButton.style.display = 'none'; // 隱藏按鈕
       }
     }
   </script>
