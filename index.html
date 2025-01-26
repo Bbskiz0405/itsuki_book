@@ -15,7 +15,7 @@
   }
   .content-wrapper {
     background: rgba(0, 0, 0, 0.6); /* 半透明背景提升文字可讀性 */
-    padding: 30px;
+    padding: 20px;
     border-radius: 10px;
     max-width: 800px;
     margin: 20px auto; /* 水平與垂直置中 */
@@ -43,7 +43,7 @@
     display: none; /* 預設答案圖片不顯示 */
   }
   .button-container {
-    margin-top: -180px; /* 第一個按鈕向上移動 */
+    margin-top: -150px; /* 第一個按鈕向上移動 */
     position: relative;
   }
   button {
@@ -52,7 +52,7 @@
     cursor: pointer;
   }
   img.button-image {
-    width: 300px; /* 調整按鈕大小 */
+    width: 250px; /* 調整按鈕大小 */
     height: auto;
   }
   .next-button {
@@ -64,14 +64,13 @@
     font-size: 16px;
     color: rgb(254, 150, 137);
     border-radius: 5px;
-    margin-top: 200px; /* 調整第二個按鈕更靠下 */
+    margin-top: 150px; /* 調整第二個按鈕位置 */
   }
-  /* 側邊抽屜選單樣式 */
   .menu-container {
     position: fixed;
     top: 0;
-    right: -350px; /* 隱藏選單，初始位置在螢幕外 */
-    width: 350px;
+    right: -70%; /* 在手機上將寬度調整為 70% */
+    width: 70%;
     height: 100%;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
@@ -81,38 +80,25 @@
   }
   .menu-container h2 {
     text-align: center;
-    padding: 20px 0;
+    padding: 10px 0;
     margin: 0;
     background-color: rgb(254, 150, 137);
     color: #fff;
-    font-size: 20px;
-  }
-  .menu-container .qrcode-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    gap: 30px; /* 圖片間的距離 */
+    font-size: 18px;
   }
   .menu-container .qrcode-container img {
-    width: 300px; /* 調整圖片寬度 */
+    width: 80%; /* 確保圖片在手機上縮小 */
     height: auto; /* 確保比例正常 */
-  }
-  .menu-container .author {
-    text-align: center;
-    font-size: 18px;
-    color: rgb(100, 100, 100);
-    margin-top: 20px;
   }
   .menu-button {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 50px; /* 增加按鈕寬度 */
-    height: 50px; /* 增加按鈕高度 */
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around; /* 保持橫槓間距 */
+    justify-content: space-around;
     align-items: center;
     background-color: rgb(254, 150, 137);
     border: none;
@@ -121,8 +107,8 @@
     border-radius: 5px;
   }
   .menu-button div {
-    width: 35px; /* 增加橫槓的寬度 */
-    height: 5px; /* 增加橫槓的高度 */
+    width: 30px; /* 減小橫槓大小 */
+    height: 4px;
     background-color: #fff;
     border-radius: 2px;
   }
@@ -130,7 +116,7 @@
     background-color: rgb(255, 200, 200); /* 提升 hover 效果 */
   }
   .overlay {
-    display: none; /* 預設不顯示 */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -139,80 +125,104 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
   }
+
+  /* 手機版調整 (螢幕寬度小於 768px 時適用) */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 32px; /* 調整標題字體 */
+    }
+    p {
+      font-size: 16px; /* 調整段落字體 */
+    }
+    img.button-image {
+      width: 180px; /* 縮小按鈕圖片 */
+    }
+    .next-button {
+      font-size: 14px; /* 縮小按鈕文字 */
+      margin-top: 120px;
+    }
+    .menu-container {
+      right: -100%; /* 選單初始在螢幕外 */
+      width: 100%; /* 滿版寬度 */
+    }
+    .menu-container .qrcode-container img {
+      width: 90%; /* 確保 QR Code 圖片不超出邊界 */
+    }
+    .menu-button {
+      width: 30px;
+      height: 30px;
+    }
+    .menu-button div {
+      width: 20px;
+      height: 3px;
+    }
+  }
 </style>
 </head>
 <body>
+  <button class="menu-button" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </button>
 
-<!-- 側邊選單按鈕 -->
-<button class="menu-button" onclick="toggleMenu()">
-  <div></div>
-  <div></div>
-  <div></div>
-</button>
-
-<!-- 側邊選單 -->
-<div class="menu-container" id="menu">
-  <h2>相關資料</h2>
-  <div class="qrcode-container">
-    <img src="tool_img/qrcode1.jpeg" alt="QRCode 1">
-    <img src="tool_img/qrcode2.jpeg" alt="QRCode 2">
+  <div class="menu-container" id="menu">
+    <h2>相關資料</h2>
+    <div class="qrcode-container">
+      <img src="tool_img/qrcode1.jpeg" alt="QRCode 1">
+      <img src="tool_img/qrcode2.jpeg" alt="QRCode 2">
+    </div>
+    <div class="author">作者：我不吃辣</div>
   </div>
-  <div class="author">作者：我不吃辣</div>
-</div>
 
-<!-- 遮罩層 -->
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<!-- 主內容 -->
-<div class="content-wrapper">
-  <h1>王月之書</h1>
-  <p>默念心中所想，玥光會指引妳方向</p>
-  <div class="image-container">
-    <img id="answerImage" class="answer-image" alt="答案圖片">
+  <div class="content-wrapper">
+    <h1>王月之書</h1>
+    <p>默念心中所想，玥光會指引妳方向</p>
+    <div class="image-container">
+      <img id="answerImage" class="answer-image" alt="答案圖片">
+    </div>
+    <div class="button-container">
+      <button id="revealButton" onclick="showRandomAnswer()">
+        <img src="tool_img/button-image.jpg" alt="揭示答案" class="button-image">
+      </button>
+    </div>
+    <button id="nextButton" class="next-button" onclick="showRandomAnswer()">下一張</button>
   </div>
-  <div class="button-container">
-    <button id="revealButton" onclick="showRandomAnswer()">
-      <img src="tool_img/button-image.jpg" alt="揭示答案" class="button-image">
-    </button>
-  </div>
-  <button id="nextButton" class="next-button" onclick="showRandomAnswer()">下一張</button>
-</div>
 
-<script>
-  function showRandomAnswer() {
-    const answers = [];
-    for (let i = 1; i <= 161; i++) {
-      answers.push(`img/${i}.jpg`);
+  <script>
+    function showRandomAnswer() {
+      const answers = [];
+      for (let i = 1; i <= 161; i++) {
+        answers.push(`img/${i}.jpg`);
+      }
+      answers.push('img/rickroll-roll.gif');
+
+      const randomIndex = Math.floor(Math.random() * answers.length);
+      const answerImage = document.getElementById('answerImage');
+      answerImage.src = answers[randomIndex];
+      answerImage.style.display = 'block';
+
+      const revealButton = document.getElementById('revealButton');
+      const nextButton = document.getElementById('nextButton');
+      if (revealButton.style.display !== 'none') {
+        revealButton.style.display = 'none';
+        nextButton.style.display = 'inline-block';
+      }
     }
-    answers.push('img/rickroll-roll.gif'); // 添加GIF
 
-    const randomIndex = Math.floor(Math.random() * answers.length);
-    const answerImage = document.getElementById('answerImage');
-    answerImage.src = answers[randomIndex];
-    answerImage.style.display = 'block';
-
-    const revealButton = document.getElementById('revealButton');
-    const nextButton = document.getElementById('nextButton');
-    if (revealButton.style.display !== 'none') {
-      revealButton.style.display = 'none'; // 隱藏揭示答案按鈕
-      nextButton.style.display = 'inline-block'; // 顯示下一張按鈕
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      const overlay = document.getElementById('overlay');
+      if (menu.style.right === '0px') {
+        menu.style.right = '-70%';
+        overlay.style.display = 'none';
+      } else {
+        menu.style.right = '0px';
+        overlay.style.display = 'block';
+      }
     }
-  }
-
-  function toggleMenu() {
-    const menu = document.getElementById('menu');
-    const overlay = document.getElementById('overlay');
-    const menuButton = document.querySelector('.menu-button');
-    if (menu.style.right === '0px') {
-      menu.style.right = '-350px';
-      overlay.style.display = 'none';
-      menuButton.style.display = 'flex';
-    } else {
-      menu.style.right = '0px';
-      overlay.style.display = 'block';
-      menuButton.style.display = 'none';
-    }
-  }
-</script>
+  </script>
 </body>
 </html>
