@@ -64,7 +64,7 @@
     font-size: 16px;
     color: rgb(254, 150, 137);
     border-radius: 5px;
-    margin-top: 120px; /* 調整第二個按鈕更靠下 */
+    margin-top: 200px; /* 調整第二個按鈕更靠下，避免遮擋圖片 */
   }
   /* 側邊抽屜選單樣式 */
   .menu-container {
@@ -108,26 +108,19 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
     background-color: rgb(254, 150, 137);
+    color: #fff;
     border: none;
+    padding: 10px 15px;
+    font-size: 16px;
     cursor: pointer;
-    z-index: 1100;
     border-radius: 5px;
+    z-index: 1100;
   }
-  .menu-button div {
-    width: 25px;
-    height: 3px;
+  .menu-button:hover {
     background-color: #fff;
-    border-radius: 2px;
-  }
-  .menu-button:hover div {
-    background-color: rgb(255, 200, 200); /* 提升 hover 效果 */
+    color: rgb(254, 150, 137);
+    border: 1px solid rgb(254, 150, 137);
   }
   .overlay {
     display: none; /* 預設不顯示 */
@@ -144,11 +137,7 @@
 <body>
 
 <!-- 側邊選單按鈕 -->
-<button class="menu-button" onclick="toggleMenu()">
-  <div></div>
-  <div></div>
-  <div></div>
-</button>
+<button class="menu-button" onclick="toggleMenu()">&#9776;</button>
 
 <!-- 側邊選單 -->
 <div class="menu-container" id="menu">
@@ -184,7 +173,8 @@
     for (let i = 1; i <= 161; i++) {
       answers.push(`img/${i}.jpg`);
     }
-    answers.push('img/rickroll-roll.gif'); // 額外的 GIF 圖片
+    answers.push('img/rickroll-roll.gif'); // 添加GIF
+
     const randomIndex = Math.floor(Math.random() * answers.length);
     const answerImage = document.getElementById('answerImage');
     answerImage.src = answers[randomIndex];
@@ -205,7 +195,7 @@
     if (menu.style.right === '0px') {
       menu.style.right = '-350px';
       overlay.style.display = 'none';
-      menuButton.style.display = 'flex';
+      menuButton.style.display = 'block';
     } else {
       menu.style.right = '0px';
       overlay.style.display = 'block';
