@@ -69,8 +69,8 @@
   .menu-container {
     position: fixed;
     top: 0;
-    right: -70%; /* 在手機上將寬度調整為 70% */
-    width: 70%;
+    right: -350px; /* 初始隱藏選單 */
+    width: 350px;
     height: 100%;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
@@ -87,18 +87,32 @@
     font-size: 18px;
   }
   .menu-container .qrcode-container img {
-    width: 80%; /* 確保圖片在手機上縮小 */
-    height: auto; /* 確保比例正常 */
+    width: 80%; /* 圖片縮小 */
+    height: auto;
+    margin-bottom: 10px;
+  }
+  .menu-container .qrcode-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    gap: 15px; /* 圖片間距 */
+  }
+  .menu-container .qrcode-container p {
+    font-size: 14px;
+    color: rgb(80, 80, 80);
+    margin: 5px 0;
   }
   .menu-button {
     position: fixed;
     top: 10px;
     right: 10px;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
     background-color: rgb(254, 150, 137);
     border: none;
@@ -107,8 +121,8 @@
     border-radius: 5px;
   }
   .menu-button div {
-    width: 30px; /* 減小橫槓大小 */
-    height: 4px;
+    width: 30px;
+    height: 5px;
     background-color: #fff;
     border-radius: 2px;
   }
@@ -142,25 +156,20 @@
       margin-top: 120px;
     }
     .menu-container {
-      right: -100%; /* 選單初始在螢幕外 */
+      right: -100%; /* 初始在螢幕外 */
       width: 100%; /* 滿版寬度 */
     }
     .menu-container .qrcode-container img {
-      width: 90%; /* 確保 QR Code 圖片不超出邊界 */
+      width: 80%; /* 圖片大小調整 */
     }
-    .menu-button {
-      width: 30px;
-      height: 30px;
-    }
-    .menu-button div {
-      width: 20px;
-      height: 3px;
+    .menu-container .qrcode-container p {
+      font-size: 12px; /* 手機版文字縮小 */
     }
   }
 </style>
 </head>
 <body>
-  <button class="menu-button" onclick="toggleMenu()">
+  <button class="menu-button" id="menuButton" onclick="toggleMenu()">
     <div></div>
     <div></div>
     <div></div>
@@ -171,8 +180,10 @@
     <div class="qrcode-container">
       <img src="tool_img/qrcode1.jpeg" alt="QRCode 1">
       <img src="tool_img/qrcode2.jpeg" alt="QRCode 2">
+      <a href="https://www.youtube.com/@ItsukiIanvs" target="_blank">https://www.youtube.com/@ItsukiIanvs</a>
+      <p>作者：我不吃辣</p>
+      <p>本網站為紛絲自製，與官方無關</p>
     </div>
-    <div class="author">作者：我不吃辣</div>
   </div>
 
   <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -185,7 +196,7 @@
     </div>
     <div class="button-container">
       <button id="revealButton" onclick="showRandomAnswer()">
-        <img src="tool_img/button-image.jpg" alt="揭示答案" class="button-image">
+        <img src="tool_img/test1.jpeg" alt="揭示答案" class="button-image">
       </button>
     </div>
     <button id="nextButton" class="next-button" onclick="showRandomAnswer()">下一張</button>
@@ -215,12 +226,15 @@
     function toggleMenu() {
       const menu = document.getElementById('menu');
       const overlay = document.getElementById('overlay');
+      const menuButton = document.getElementById('menuButton');
       if (menu.style.right === '0px') {
-        menu.style.right = '-70%';
+        menu.style.right = '-350px';
         overlay.style.display = 'none';
+        menuButton.style.display = 'block';
       } else {
         menu.style.right = '0px';
         overlay.style.display = 'block';
+        menuButton.style.display = 'none';
       }
     }
   </script>
