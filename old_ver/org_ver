@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -5,16 +6,14 @@
 <title>王月之書</title>
 <style>
   body {
-  text-align: center;
-  background: url('tool_img/new_year_background.jpeg') no-repeat center center fixed;
-  background-size: cover; /* 讓背景圖片覆蓋整個畫面 */
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  color: #fff; /* 白色文字 */
-}
-
+    text-align: center;
+    background-color: rgb(254, 150, 137); /* 粉紅色背景 */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: #fff; /* 白色文字 */
+  }
   .content-wrapper {
     background: rgba(0, 0, 0, 0.6); /* 半透明背景提升文字可讀性 */
     padding: 20px;
@@ -185,7 +184,6 @@
       <img src="tool_img/qrcode2.jpeg" alt="QRCode 2">
       <a href="https://www.youtube.com/@ItsukiIanvs" target="_blank">https://www.youtube.com/@ItsukiIanvs</a>
       <p>作者：我不吃辣</p>
-      <p>特別感謝：玥Itsuki 以及所有的玥光族</p>
       <p>本網站為紛絲自製，與官方無關</p>
     </div>
   </div>
