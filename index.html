@@ -177,9 +177,11 @@
     }
 
     .menu-container {
-      right: -100%; /* 初始在螢幕外 */
-      width: 100%; /* 滿版寬度 */
+        width: 80%; /* 讓選單寬度只有 80%，不會完全覆蓋 */
+        max-width: 300px; /* 限制最大寬度 */
+        right: -100%; /* 仍然從螢幕外進入 */
     }
+    
     .menu-container .qrcode-container img {
       width: 80%; /* 圖片大小調整 */
     }
