@@ -170,10 +170,12 @@
     }
     img.button-image {
       width: 200px; /* 縮小按鈕圖片 */
+      display: block;
+      margin: 50px auto 0; /* 往下移動 150px */
     }
     .next-button {
       font-size: 14px; /* 縮小按鈕文字 */
-      margin-top: 200px; /* 增加間距，避免與解答圖片重疊 */
+      margin-top: 350px; /* 增加間距，避免與解答圖片重疊 */
     }
 
     .menu-container {
@@ -181,7 +183,7 @@
         max-width: 300px; /* 限制最大寬度 */
         right: -100%; /* 仍然從螢幕外進入 */
     }
-    
+
     .menu-container .qrcode-container img {
       width: 80%; /* 圖片大小調整 */
     }
@@ -250,7 +252,7 @@
   // }
 
   // 加入 Rickroll 彩蛋
-  answers.push('img/rickroll-roll.gif');
+  answers.push('img/rickroll-roll.gif','img/RRRRRRR.png');
 
   // 隨機選擇一張圖片
   const randomIndex = Math.floor(Math.random() * answers.length);
