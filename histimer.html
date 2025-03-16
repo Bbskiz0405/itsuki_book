@@ -15,12 +15,34 @@
     color: #fff;
   }
 
+  .marquee {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  animation: marquee 10s linear infinite;
+  font-size: 16px;
+  color: #ffcc00;
+  padding: 8px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: transparent; /* 改透明 */
+}
+
+
+  @keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
   .content-wrapper {
     background: rgba(0, 0, 0, 0.6);
     padding: 20px;
     border-radius: 10px;
     max-width: 800px;
-    margin: 20px auto;
+    margin: 60px auto 20px auto;
     text-align: center;
   }
   h1 {
@@ -55,14 +77,19 @@
 </style>
 </head>
 <body>
-  <div class="content-wrapper">
+    <!-- 跑馬燈 start -->
+    <div class="marquee">震驚！一名睿姓男子竟然在10秒內瘋狂做這件事，網友驚呼：好快！！！！</div>
+    <!-- 跑馬燈 end -->
+    <div class="content-wrapper">
     <h1>玥圓人團圓</h1>
     <h2>玥光族的做死日常</h2>
+    
     <p>2025/02/08 鴨辣麻血:明年FF46我穿cos去</p>
     <p>2025/02/09 富察瓔珞:我今年很忙耶~又要倒立頭轉瑞克搖+穿泳衣下水游泳+修女裝</p>
     <p>2025/02/14 富察瓔珞:京花FF45要Cos大姐頭泳裝照 </p>
     <p>2025/03/15 小叡阿叡叡:好啦 來啦 豁出去了啦 西裝加JK裙子</p>
     <p>2025/03/15 Rayhom:在想那天要不要出僕人</p>
+    <p>2025/03/16 小叡阿叡叡:F45好像要準備兩個旗子插在背上耶</p>
     <a href="index.html">
       <button class="back-button">返回主頁</button>
     </a>
