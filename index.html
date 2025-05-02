@@ -17,6 +17,27 @@
   color: #fff; /* 白色文字 */
 }
 
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  animation: marquee 15s linear infinite;
+  font-size: 16px;
+  color: #ffcc00;
+  padding: 8px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: transparent; /* 改透明 */
+}
+
+
+  @keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
 
 .itsuki-image {
   position: fixed;
@@ -194,7 +215,9 @@
 </style>
 </head>
 <body>
-
+  <!-- 跑馬燈 start -->
+  <div class="marquee">2025/05/03天氣預報:高溫31 低溫24 降雨機率45% 請各位玥光族出門在家都要保持好心情</div>
+  <!-- 跑馬燈 end -->
   <!--<img src="tool_img/new_year_itsuki.png" alt="Itsuki" class="itsuki-image">-->
 
   <button class="menu-button" id="menuButton" onclick="toggleMenu()">
