@@ -221,21 +221,23 @@
     }
 
     .marquee {
-      font-size: 14px;
-      padding: 12px 0;
-      line-height: 1.5;
-      height: auto;
-      top: 0;
-      z-index: 1200;
-      background-color: rgba(0, 0, 0, 0.7);
-      position: fixed;
-      width: 100%;
-      white-space: nowrap;
+      width: 100vw;  /* ← 這行強制整個畫面寬度 */
       overflow: hidden;
+      white-space: nowrap;
       box-sizing: border-box;
-      border: 1px solid yellow;
-  
+      animation: marquee 15s linear infinite;
+      font-size: 16px;
+      color: #ffcc00;
+      padding: 12px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background-color: rgba(0, 0, 0, 0.8);
+      line-height: 1.5;
     }
+
 
 
 
