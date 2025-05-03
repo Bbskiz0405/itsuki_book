@@ -217,10 +217,13 @@
     }
 
     .marquee {
-      font-size: 14px; /* 字小一點 */
-      padding: 12px 0; /* 加一點上下空間 */
-      top: 0;
+      font-size: 14px;            /* 字體小一點 */
+      padding: 12px 0;            /* 增加上下間距 */
+      line-height: 1.5;           /* 調整行高避免裁切 */
+      height: auto;               /* 避免固定高度造成裁切 */
+      z-index: 1200;              /* 確保在最上層 */
     }
+
 
 
   }
