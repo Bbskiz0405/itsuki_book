@@ -216,13 +216,25 @@
       padding-bottom: 150px; /* 或你想要的數值，例如 150px */
     }
 
-    .marquee {
-      font-size: 14px;            /* 字體小一點 */
-      padding: 12px 0;            /* 增加上下間距 */
-      line-height: 1.5;           /* 調整行高避免裁切 */
-      height: auto;               /* 避免固定高度造成裁切 */
-      z-index: 1200;              /* 確保在最上層 */
+    .menu-button {
+      top: 50px;  /* 往下移動 */
     }
+
+    .marquee {
+      font-size: 14px;
+      padding: 12px 0;
+      line-height: 1.5;
+      height: auto;
+      top: 0;
+      z-index: 1200;
+      background-color: transparent;
+      position: fixed;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
 
 
 
