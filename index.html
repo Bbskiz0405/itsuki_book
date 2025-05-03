@@ -221,20 +221,23 @@
     }
 
     .marquee {
-  width: 100vw; /* 確保佔滿螢幕寬度 */
+  width: 100vw; /* 滿版寬度 */
   overflow: hidden;
   white-space: nowrap;
   box-sizing: border-box;
   animation: marquee 15s linear infinite;
   font-size: 16px;
+  line-height: 1.5em; /* 加這行避免被上下切字 */
+  height: 1.8em;       /* 保證足夠的垂直空間顯示整個文字 */
   color: #ffcc00;
-  padding: 8px 16px; /* 左右預留 padding，防止被邊緣切到 */
+  padding: 8px 16px;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  background-color: transparent;
+  background-color: black; /* 測試時設明顯背景觀察邊界 */
 }
+
 
 
   }
