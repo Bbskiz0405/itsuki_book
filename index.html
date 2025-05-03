@@ -221,27 +221,20 @@
     }
 
     .marquee {
-  width: 100vw;
+  width: 100vw; /* 確保佔滿螢幕寬度 */
   overflow: hidden;
   white-space: nowrap;
   box-sizing: border-box;
   animation: marquee 15s linear infinite;
-  font-size: 14px; /* 字體調小 */
-  line-height: 1.8; /* 增加行高 */
-  padding: 12px 16px; /* 增加內距 */
-  height: auto; /* 不限制高度 */
-  min-height: 1.5em; /* 最小高度防裁切 */
+  font-size: 16px;
+  color: #ffcc00;
+  padding: 8px 16px; /* 左右預留 padding，防止被邊緣切到 */
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: transparent;
 }
-
-
-
-
 
 
   }
