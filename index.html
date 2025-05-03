@@ -220,22 +220,30 @@
       top: 50px;  /* 往下移動 */
     }
 
-    .marquee {
-  width: 100vw; /* 確保佔滿螢幕寬度 */
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  animation: marquee 15s linear infinite;
-  font-size: 16px;
-  color: #ffcc00;
-  padding: 8px 16px; /* 左右預留 padding，防止被邊緣切到 */
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  background-color: transparent;
+    .marquee{
+  width:100vw;           /* 只佔螢幕寬 */
+  overflow:hidden;       /* 把超出的文字藏起來 */
+  position:fixed;
+  top:0;left:0;
+  padding:8px 0;
+  background:black;
+  z-index:1000;
+  font-size:16px;
+  line-height:1.6em;     /* 避免被上下裁切 */
+  color:#ffcc00;
 }
 
+.marquee span{
+  display:inline-block;
+  padding-left:100vw;    /* 起跑時讓整句話在螢幕右側外等待 */
+  animation:marquee 12s linear infinite;
+}
+
+/* 跑馬燈動畫：從 0 → -100%（span 自己的寬度）*/
+@keyframes marquee{
+  0%   { transform:translateX(0);      }
+  100% { transform:translateX(-100%); }
+}
 
   }
 </style>
