@@ -222,31 +222,11 @@
     }
 
     
-    .marquee{
-      width:100vw;
-      overflow:hidden;
-      position:fixed; top:0; left:0;
-      padding:8px 0;
-      background:#000;
-      color:#ffcc00;
-      font-size:16px;
-      line-height:1.6em;
-      z-index:1000;
+    .marquee {
+      font-size: 14px;
+      padding: 6px 0;
     }
 
-    /* 只改 span */
-    .marquee span{
-      display:inline-block;
-      white-space:nowrap;
-      /* 起點直接 100%，不用 padding‑left */
-      transform:translateX(100%);
-      animation:marquee 12s linear infinite;
-    }
-
-    /* 終點 -100% -100vw → 保證整句完全離開畫面 */
-    @keyframes marquee{
-      to{ transform:translateX(calc(-100% - 100vw)); }
-    }
 
   }
 </style>
@@ -254,7 +234,7 @@
 <body>
   <!-- 跑馬燈 start -->
   <div class="marquee">
-    <span>2025/05/04天氣預報:高溫30 低溫24 降雨機率55% 為什麼這行跑起來的字這麼難搞</span>
+    <span>2025/05/05天氣預報:高溫30 低溫25 降雨機率25%</span>
   </div>
   <!-- 跑馬燈 end -->
   <!--<img src="tool_img/new_year_itsuki.png" alt="Itsuki" class="itsuki-image">-->
