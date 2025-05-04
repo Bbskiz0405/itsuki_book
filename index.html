@@ -221,27 +221,32 @@
       top: 50px;  /* 往下移動 */
     }
 
-    .marquee {
-  width: 200%;
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  animation: marquee 15s linear infinite;
-  font-size: 16px;
-  color: #ffcc00;
-  padding: 8px 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  background-color: transparent; /* 改透明 */
-}
+    
+    .marquee{
+      width:100vw;
+      overflow:hidden;
+      position:fixed; top:0; left:0;
+      padding:8px 0;
+      background:#000;
+      color:#ffcc00;
+      font-size:16px;
+      line-height:1.6em;
+      z-index:1000;
+    }
 
+    /* 只改 span */
+    .marquee span{
+      display:inline-block;
+      white-space:nowrap;
+      /* 起點直接 100%，不用 padding‑left */
+      transform:translateX(100%);
+      animation:marquee 12s linear infinite;
+    }
 
-  @keyframes marquee {
-    0%   { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-  }
+    /* 終點 -100% -100vw → 保證整句完全離開畫面 */
+    @keyframes marquee{
+      to{ transform:translateX(calc(-100% - 100vw)); }
+    }
 
   }
 </style>
