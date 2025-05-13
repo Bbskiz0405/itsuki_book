@@ -141,6 +141,32 @@
     color: rgb(80, 80, 80);
     margin: 5px 0;
   }
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin: 0;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .nav-item:hover {
+    background-color: #f5f5f5;
+  }
+  .nav-item img {
+    width: 28px;
+    height: 28px;
+    margin-right: 15px;
+  }
+  .nav-item span {
+    font-size: 16px;
+    color: #333;
+  }
   .menu-button {
     position: fixed;
     top: 10px;
@@ -212,6 +238,16 @@
     .menu-container .qrcode-container p {
       font-size: 12px; /* 手機版文字縮小 */
     }
+    .nav-item {
+      padding: 12px 15px; /* 手機版導航項目間距縮小 */
+    }
+    .nav-item img {
+      width: 24px; /* 手機版圖標縮小 */
+      height: 24px;
+    }
+    .nav-item span {
+      font-size: 14px; /* 手機版導航文字縮小 */
+    }
 
     .content-wrapper {
       padding-bottom: 150px; /* 或你想要的數值，例如 150px */
@@ -250,15 +286,37 @@
 
   <div class="menu-container" id="menu">
     <h2>相關資料</h2>
+    <ul class="nav-list">
+      <li class="nav-item" onclick="window.location.href='index.html'">
+        <img src="tool_img/home-icon.png" alt="首頁">
+        <span>首頁</span>
+      </li>
+      <li class="nav-item" onclick="window.open('https://www.youtube.com/@ItsukiIanvs', '_blank')">
+        <img src="tool_img/yt_slogo.png" alt="YouTube">
+        <span>Youtube</span>
+      </li>
+      <li class="nav-item" onclick="window.open('https://x.com/itsuki_ianvs', '_blank')">
+        <img src="tool_img/x_logo.jpg" alt="Twitter">
+        <span>Twitter</span>
+      </li>
+      <li class="nav-item" onclick="window.open('https://www.twitch.tv/itsuki_ianvs?lang=zh-tw', '_blank')">
+        <img src="tool_img/tw_logo.png" alt="Twitch">
+        <span>Twitch</span>
+      </li>
+      <li class="nav-item" onclick="location.href='histimer.html'">
+        <img src="tool_img/history-icon.png" alt="編年史">
+        <span>編年史</span>
+      </li>
+      <li class="nav-item" onclick="alert('王月之書\n版本: 1.0.0\n最後更新: 2025/05/13\n\n這是一個粉絲自製的網站，與官方無關。\n\n特別感謝所有支持玥Itsuki的粉絲們！');">
+        <img src="tool_img/info-icon.png" alt="關於網站">
+        <span>關於網站</span>
+      </li>
+    </ul>
     <div class="qrcode-container">
-      <img src="tool_img/qrcode1.jpeg" alt="QRCode 1">
-      <img src="tool_img/qrcode2.jpeg" alt="QRCode 2">
-      <a href="https://www.youtube.com/@ItsukiIanvs" target="_blank">https://www.youtube.com/@ItsukiIanvs</a>
       <p>特別感謝：玥Itsuki 以及 所有的玥光族</p>
       <p>本網站為紛絲自製，與官方無關</p>
       <p>製作群:我不吃辣，八玥姐姐，<br>
         富察瓔珞，世紀大塊人</p>
-      <button onclick="location.href='histimer.html'" style="background-color: rgb(254, 150, 137); color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">編年史</button>
     </div>
   </div>
 
