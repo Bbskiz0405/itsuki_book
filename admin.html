@@ -170,8 +170,14 @@
         </div>
         
         <h2>已上傳的圖片</h2>
+        <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="searchInput" placeholder="搜尋圖片名稱或內容..." style="flex:1; padding:8px; font-size:16px;">
+            <button id="searchBtn">搜尋</button>
+            <button id="clearSearchBtn">清除</button>
+        </div>
         <div class="loading" id="loading">載入中...</div>
         <div class="gallery" id="imageGallery"></div>
+        <div id="pagination" style="margin: 24px 0; text-align:center; display: flex; justify-content: center; gap: 8px;"></div>
         </div>
     </div>
 
@@ -368,38 +374,92 @@
             }
         });
 
-        // 載入圖片列表
-        async function loadImages() {
-            // 確保使用者已登入
+        // 分頁與搜尋參數
+        let currentPage = 1;
+        const pageSize = 20;
+        let lastVisible = null;
+        let firstVisible = null;
+        let totalImages = 0;
+        let searchKeyword = '';
+        let pageCursors = [];
+
+        // 載入圖片總數（支援搜尋）
+        async function fetchTotalImagesCount(keyword = '') {
+            let query = db.collection('images');
+            if (keyword) {
+                // Firestore 無法直接全文搜尋多欄位，這裡僅作簡單 client-side 過濾（效能有限，建議圖片量極大時用第三方搜尋服務）
+                const snapshot = await query.get();
+                return snapshot.docs.filter(doc => {
+                    const data = doc.data();
+                    return (data.name && data.name.includes(keyword)) || (data.text && data.text.includes(keyword));
+                }).length;
+            } else {
+                const snapshot = await query.get();
+                return snapshot.size;
+            }
+        }
+
+        // 載入圖片列表（分頁+搜尋）
+        async function loadImages(page = 1, keyword = '') {
             if (!auth.currentUser) return;
             try {
                 loading.style.display = 'block';
                 imageGallery.innerHTML = '';
-                
-                const querySnapshot = await db.collection('images')
-                    .orderBy('createdAt', 'desc')
-                    .get();
-                
-                if (querySnapshot.empty) {
-                    imageGallery.innerHTML = '<p>尚未上傳任何圖片</p>';
+                let query = db.collection('images').orderBy('createdAt', 'desc');
+                let snapshot;
+                // 搜尋時先全部抓下來 client-side 過濾（小量資料可行）
+                if (keyword) {
+                    snapshot = await query.get();
+                    let filtered = snapshot.docs.filter(doc => {
+                        const data = doc.data();
+                        return (data.name && data.name.includes(keyword)) || (data.text && data.text.includes(keyword));
+                    });
+                    totalImages = filtered.length;
+                    // 分頁
+                    const start = (page - 1) * pageSize;
+                    const end = start + pageSize;
+                    filtered.slice(start, end).forEach(doc => {
+                        renderImageCard(doc.data());
+                    });
+                    renderPagination(page, Math.ceil(totalImages / pageSize));
                     return;
                 }
-                
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const imageCard = document.createElement('div');
-                    imageCard.className = 'image-card';
-                    imageCard.innerHTML = `
-                        <img src="${data.imageUrl}" alt="${data.name}">
-                        <div class="image-info">
-                            <h3>${data.name}</h3>
-                            <p>${data.text}</p>
-                            <small>上傳時間: ${new Date(data.createdAt?.toDate()).toLocaleString()}</small>
-                        </div>
-                    `;
-                    imageGallery.appendChild(imageCard);
+                // 無搜尋時用 Firestore 分頁
+                // 構建分頁游標
+                if (page === 1) {
+                    query = query.limit(pageSize);
+                    snapshot = await query.get();
+                    pageCursors = [null];
+                } else {
+                    // 取得上一頁最後一筆
+                    const prevCursor = pageCursors[page - 1];
+                    if (prevCursor) {
+                        query = query.startAfter(prevCursor).limit(pageSize);
+                        snapshot = await query.get();
+                    } else {
+                        // 若無游標則重新查詢
+                        query = query.limit((page - 1) * pageSize + pageSize);
+                        snapshot = await query.get();
+                        const docs = snapshot.docs;
+                        const startIdx = (page - 1) * pageSize;
+                        const pageDocs = docs.slice(startIdx, startIdx + pageSize);
+                        snapshot = { docs: pageDocs };
+                    }
+                }
+                if (snapshot.docs.length === 0) {
+                    imageGallery.innerHTML = '<p>尚未上傳任何圖片</p>';
+                    renderPagination(page, 1);
+                    return;
+                }
+                totalImages = await fetchTotalImagesCount();
+                snapshot.docs.forEach(doc => {
+                    renderImageCard(doc.data());
                 });
-                
+                // 記錄游標
+                if (snapshot.docs.length > 0 && !keyword) {
+                    pageCursors[page] = snapshot.docs[snapshot.docs.length - 1];
+                }
+                renderPagination(page, Math.ceil(totalImages / pageSize));
             } catch (error) {
                 console.error('載入圖片錯誤:', error);
                 imageGallery.innerHTML = '<p>載入圖片時發生錯誤</p>';
@@ -407,6 +467,83 @@
                 loading.style.display = 'none';
             }
         }
+
+        // 渲染單張圖片卡片
+        function renderImageCard(data) {
+            const imageCard = document.createElement('div');
+            imageCard.className = 'image-card';
+            imageCard.innerHTML = `
+                <img src="${data.imageUrl}" alt="${data.name}">
+                <div class="image-info">
+                    <h3>${data.name}</h3>
+                    <p>${data.text}</p>
+                    <small>上傳時間: ${data.createdAt && data.createdAt.toDate ? new Date(data.createdAt.toDate()).toLocaleString() : ''}</small>
+                </div>
+            `;
+            imageGallery.appendChild(imageCard);
+        }
+
+        // 渲染分頁按鈕
+        function renderPagination(current, total) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            if (total <= 1) return;
+            // 上一頁
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '上一頁';
+            prevBtn.disabled = current === 1;
+            prevBtn.onclick = () => {
+                if (current > 1) {
+                    loadImages(current - 1, searchKeyword);
+                }
+            };
+            pagination.appendChild(prevBtn);
+            // 頁碼
+            for (let i = 1; i <= total; i++) {
+                if (i === 1 || i === total || Math.abs(i - current) <= 2) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.disabled = i === current;
+                    btn.onclick = () => loadImages(i, searchKeyword);
+                    pagination.appendChild(btn);
+                } else if (i === current - 3 || i === current + 3) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    pagination.appendChild(ellipsis);
+                }
+            }
+            // 下一頁
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '下一頁';
+            nextBtn.disabled = current === total;
+            nextBtn.onclick = () => {
+                if (current < total) {
+                    loadImages(current + 1, searchKeyword);
+                }
+            };
+            pagination.appendChild(nextBtn);
+        }
+
+        // 搜尋功能
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const keyword = document.getElementById('searchInput').value.trim();
+            searchKeyword = keyword;
+            loadImages(1, keyword);
+        });
+        document.getElementById('clearSearchBtn').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            searchKeyword = '';
+            loadImages(1, '');
+        });
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('searchBtn').click();
+            }
+        });
+
+        // 初始化頁面時載入第一頁
+        // onAuthStateChanged 會自動呼叫 loadImages()
+
 
         // 初始化頁面
         document.addEventListener('DOMContentLoaded', () => {
