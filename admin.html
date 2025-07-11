@@ -318,31 +318,43 @@
                         uploadProgress.style.display = 'none';
                     },
                     async () => {
-                        // 上傳成功
-                        const imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
-                        
-                        // 儲存到 Firestore
-                        await db.collection('images').add({
-                            name: name,
-                            text: text,
-                            imageUrl: imageUrl,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
-                        // 清空表單
-                        imageName.value = '';
-                        imageText.value = '';
-                        imageFile.value = '';
-                        imagePreview.style.display = 'none';
-                        uploadProgress.style.display = 'none';
-                        
-                        status.textContent = '上傳成功！';
-                        status.style.color = 'green';
-                        uploadBtn.disabled = false;
-                        uploadBtn.textContent = '上傳圖片';
-                        
-                        // 重新載入圖片列表
-                        loadImages();
+                        try {
+                            // 上傳成功，獲取下載 URL
+                            const imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
+                            console.log('圖片上傳成功，URL:', imageUrl);
+                            
+                            // 儲存到 Firestore
+                            const docRef = await db.collection('images').add({
+                                name: name,
+                                text: text,
+                                imageUrl: imageUrl,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            console.log('文件寫入成功，ID:', docRef.id);
+                            
+                            // 清空表單
+                            imageName.value = '';
+                            imageText.value = '';
+                            imageFile.value = '';
+                            imagePreview.style.display = 'none';
+                            uploadProgress.style.display = 'none';
+                            
+                            status.textContent = '上傳成功！';
+                            status.style.color = 'green';
+                            uploadBtn.disabled = false;
+                            uploadBtn.textContent = '上傳圖片';
+                            
+                            // 重新載入圖片列表
+                            await loadImages();
+                            
+                        } catch (firestoreError) {
+                            console.error('Firestore 寫入錯誤:', firestoreError);
+                            status.textContent = '圖片已上傳，但更新資料庫時出錯: ' + firestoreError.message;
+                            status.style.color = 'orange';
+                            uploadBtn.disabled = false;
+                            uploadBtn.textContent = '上傳圖片';
+                            uploadProgress.style.display = 'none';
+                        }
                     }
                 );
                 
