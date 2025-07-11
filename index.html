@@ -5,6 +5,26 @@
 <title>王月之書</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<!-- Firebase 初始化 -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyC8nvSRxtfpXxQvlRqzIzXQvcOZZ_UhDk8",
+    authDomain: "itsukibook-1001.firebaseapp.com",
+    projectId: "itsukibook-1001",
+    storageBucket: "itsukibook-1001.firebasestorage.app",
+    messagingSenderId: "173649948415",
+    appId: "1:173649948415:web:4f8117a112232a7f75e6ca"
+  };
+
+  // 初始化 Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
 <style>
   body {
   text-align: center;
@@ -337,40 +357,62 @@
   </div>
 
   <script>
-    function showRandomAnswer() {
-  const answers = [];
+    async function showRandomAnswer() {
+    try {
+      // 從 Firestore 取得所有圖片資料
+      const snapshot = await db.collection('images').get();
+      const images = [];
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.imageUrl) {
+          images.push({
+            url: data.imageUrl,
+            name: data.name || '未命名圖片',
+            text: data.text || ''
+          });
+        }
+      });
 
-  // 加入原本 1~161 的圖片
-  for (let i = 1; i <= 246; i++) {
-    answers.push(`img/${i}.jpg`);
-  }
+      if (images.length === 0) {
+        alert('目前沒有可用的圖片，請稍後再試');
+        return;
+      }
 
-  // 加入新分類的圖片（假設 T1 ~ T50）
-  for (let i = 1; i <= 44; i++) {  // 這裡 50 代表目前新留言的數量
-    answers.push(`img/t${i}.jpg`);
-  }
-
-  // 如果未來還有 X 類別的圖片，可以這樣加
-  // for (let i = 1; i <= 30; i++) {  // 這裡 30 代表 X 類別的數量
-  //   answers.push(`img/X${i}.jpg`);
-  // }
-
-  // 加入 Rickroll 彩蛋
-  answers.push('img/rickroll-roll.gif','img/RRRRRRR.png');
-
-  // 隨機選擇一張圖片
-  const randomIndex = Math.floor(Math.random() * answers.length);
-  const answerImage = document.getElementById('answerImage');
-  answerImage.src = answers[randomIndex];
-  answerImage.style.display = 'block';
-
-  // 控制按鈕顯示
-  const revealButton = document.getElementById('revealButton');
-  const nextButton = document.getElementById('nextButton');
-  if (revealButton.style.display !== 'none') {
-    revealButton.style.display = 'none';
-    nextButton.style.display = 'inline-block';
-  }
+      // 隨機選擇一張圖片
+      const randomImage = images[Math.floor(Math.random() * images.length)];
+      
+      // 顯示圖片
+      const imgElement = document.getElementById('answerImage');
+      if (imgElement) {
+        imgElement.src = randomImage.url;
+        imgElement.alt = randomImage.name;
+        imgElement.style.display = 'block';
+      }
+      
+      // 更新圖片資訊（如果頁面上有這些元素）
+      const imgNameElement = document.getElementById('imageName');
+      if (imgNameElement) {
+        imgNameElement.textContent = randomImage.name;
+      }
+      
+      const imgTextElement = document.getElementById('imageText');
+      if (imgTextElement) {
+        imgTextElement.textContent = randomImage.text;
+      }
+      
+      // 控制按鈕顯示
+      const revealButton = document.getElementById('revealButton');
+      const nextButton = document.getElementById('nextButton');
+      if (revealButton && revealButton.style.display !== 'none') {
+        revealButton.style.display = 'none';
+        if (nextButton) nextButton.style.display = 'inline-block';
+      }
+      
+    } catch (error) {
+      console.error('獲取圖片時出錯:', error);
+      alert('獲取圖片時出錯，請稍後再試');
+    }
 }
 
 
