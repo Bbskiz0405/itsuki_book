@@ -145,10 +145,7 @@
         
         <div class="upload-section">
             <h2>上傳新圖片</h2>
-            <div class="form-group">
-                <label for="imageName">圖片名稱：</label>
-                <input type="text" id="imageName" placeholder="請輸入圖片名稱" required>
-            </div>
+            
             
             <div class="form-group">
                 <label for="imageFile">選擇圖片：</label>
@@ -262,7 +259,6 @@
 
         // DOM 元素
         const imageFile = document.getElementById('imageFile');
-        const imageName = document.getElementById('imageName');
         const imageText = document.getElementById('imageText');
         const uploadBtn = document.getElementById('uploadBtn');
         const imagePreview = document.getElementById('imagePreview');
@@ -288,10 +284,9 @@
         // 上傳圖片
         uploadBtn.addEventListener('click', async () => {
             const file = imageFile.files[0];
-            const name = imageName.value.trim();
             const text = imageText.value.trim();
             
-            if (!file || !name || !text) {
+            if (!file || !text) {
                 status.textContent = '請填寫所有必填欄位';
                 status.style.color = 'red';
                 return;
@@ -331,7 +326,6 @@
                             
                             // 儲存到 Firestore
                             const docRef = await db.collection('images').add({
-                                name: name,
                                 text: text,
                                 imageUrl: imageUrl,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -339,7 +333,6 @@
                             console.log('文件寫入成功，ID:', docRef.id);
                             
                             // 清空表單
-                            imageName.value = '';
                             imageText.value = '';
                             imageFile.value = '';
                             imagePreview.style.display = 'none';
@@ -391,7 +384,7 @@
                 const snapshot = await query.get();
                 return snapshot.docs.filter(doc => {
                     const data = doc.data();
-                    return (data.name && data.name.includes(keyword)) || (data.text && data.text.includes(keyword));
+                    return data.text && data.text.includes(keyword);
                 }).length;
             } else {
                 const snapshot = await query.get();
@@ -412,7 +405,7 @@
                     snapshot = await query.get();
                     let filtered = snapshot.docs.filter(doc => {
                         const data = doc.data();
-                        return (data.name && data.name.includes(keyword)) || (data.text && data.text.includes(keyword));
+                        return data.text && data.text.includes(keyword);
                     });
                     totalImages = filtered.length;
                     // 分頁
@@ -473,9 +466,8 @@
             const imageCard = document.createElement('div');
             imageCard.className = 'image-card';
             imageCard.innerHTML = `
-                <img src="${data.imageUrl}" alt="${data.name}">
+                <img src="${data.imageUrl}" alt="圖片">
                 <div class="image-info">
-                    <h3>${data.name}</h3>
                     <p>${data.text}</p>
                     <small>上傳時間: ${data.createdAt && data.createdAt.toDate ? new Date(data.createdAt.toDate()).toLocaleString() : ''}</small>
                 </div>
