@@ -118,6 +118,23 @@
             line-height: 20px;
             color: white;
         }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .delete-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -412,7 +429,7 @@
                     const start = (page - 1) * pageSize;
                     const end = start + pageSize;
                     filtered.slice(start, end).forEach(doc => {
-                        renderImageCard(doc.data());
+                        renderImageCard(doc.data(), doc.id);
                     });
                     renderPagination(page, Math.ceil(totalImages / pageSize));
                     return;
@@ -446,7 +463,7 @@
                 }
                 totalImages = await fetchTotalImagesCount();
                 snapshot.docs.forEach(doc => {
-                    renderImageCard(doc.data());
+                    renderImageCard(doc.data(), doc.id);
                 });
                 // 記錄游標
                 if (snapshot.docs.length > 0 && !keyword) {
@@ -462,7 +479,7 @@
         }
 
         // 渲染單張圖片卡片
-        function renderImageCard(data) {
+        function renderImageCard(data, docId) {
             const imageCard = document.createElement('div');
             imageCard.className = 'image-card';
             imageCard.innerHTML = `
@@ -470,6 +487,7 @@
                 <div class="image-info">
                     <p>${data.text}</p>
                     <small>上傳時間: ${data.createdAt && data.createdAt.toDate ? new Date(data.createdAt.toDate()).toLocaleString() : ''}</small>
+                    <button class="delete-btn" onclick="deleteImage('${docId}', '${data.imageUrl}')">刪除圖片</button>
                 </div>
             `;
             imageGallery.appendChild(imageCard);
@@ -536,6 +554,43 @@
         // 初始化頁面時載入第一頁
         // onAuthStateChanged 會自動呼叫 loadImages()
 
+
+        // 刪除圖片功能
+        async function deleteImage(docId, imageUrl) {
+            if (!confirm('確定要刪除這張圖片嗎？此操作無法復原。')) {
+                return;
+            }
+            
+            try {
+                // 禁用該圖片的刪除按鈕
+                const deleteBtn = event.target;
+                deleteBtn.disabled = true;
+                deleteBtn.textContent = '刪除中...';
+                
+                // 從 Firebase Storage 刪除圖片
+                const imageRef = storage.refFromURL(imageUrl);
+                await imageRef.delete();
+                console.log('圖片已從 Storage 刪除');
+                
+                // 從 Firestore 刪除文件
+                await db.collection('images').doc(docId).delete();
+                console.log('文件已從 Firestore 刪除');
+                
+                // 重新載入圖片列表
+                await loadImages(currentPage, searchKeyword);
+                
+                alert('圖片刪除成功！');
+                
+            } catch (error) {
+                console.error('刪除圖片時發生錯誤:', error);
+                alert('刪除圖片時發生錯誤: ' + error.message);
+                
+                // 重新啟用按鈕
+                const deleteBtn = event.target;
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = '刪除圖片';
+            }
+        }
 
         // 初始化頁面
         document.addEventListener('DOMContentLoaded', () => {
