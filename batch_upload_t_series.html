@@ -597,8 +597,8 @@
                     return;
                 }
                 
-                // 上傳到 Storage
-                const storageRef = storage.ref(`images/t_series/${Date.now()}_${item.filename}`);
+                // 上傳到 Storage (使用與原腳本相同的路徑)
+                const storageRef = storage.ref(`images/${Date.now()}_${item.filename}`);
                 const snapshot = await storageRef.put(item.file);
                 const downloadURL = await snapshot.ref.getDownloadURL();
                 
