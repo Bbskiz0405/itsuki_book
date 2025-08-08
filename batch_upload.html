@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量上傳語錄圖片到Firebase</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="file"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .progress-container {
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .log-container {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .log-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .log-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .log-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>批量上傳語錄圖片到Firebase</h1>
+        
+        <div class="upload-section">
+            <h3>設定上傳參數</h3>
+            
+            <div class="form-group">
+                <label for="csvFile">上傳CSV語錄檔案：</label>
+                <input type="file" id="csvFile" accept=".csv" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="imageFolder">選擇圖片資料夾：</label>
+                <input type="file" id="imageFolder" webkitdirectory multiple>
+            </div>
+            
+            <div class="form-group">
+                <label for="startNum">開始編號：</label>
+                <input type="number" id="startNum" value="1" min="1" max="246">
+            </div>
+            
+            <div class="form-group">
+                <label for="endNum">結束編號：</label>
+                <input type="number" id="endNum" value="218" min="1" max="246">
+            </div>
+            
+            <div class="form-group">
+                <label for="batchSize">批次大小（建議5-10）：</label>
+                <input type="number" id="batchSize" value="5" min="1" max="20">
+            </div>
+            
+            <button id="startUpload">開始批量上傳</button>
+            <button id="pauseUpload" style="display:none;">暫停上傳</button>
+            <button id="resumeUpload" style="display:none;">繼續上傳</button>
+            <button id="stopUpload" style="display:none;">停止上傳</button>
+        </div>
+        
+        <div class="progress-container" id="progressContainer">
+            <h3>上傳進度</h3>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar">0%</div>
+            </div>
+            <p id="progressText">準備上傳...</p>
+        </div>
+        
+        <div class="stats" id="statsContainer" style="display:none;">
+            <div class="stat-box">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">總計</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="successCount">0</div>
+                <div class="stat-label">成功</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="errorCount">0</div>
+                <div class="stat-label">失敗</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="skippedCount">0</div>
+                <div class="stat-label">跳過</div>
+            </div>
+        </div>
+        
+        <div class="log-container" id="logContainer">
+            <h3>上傳日誌</h3>
+            <div id="logContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8nvSRxtfpXxQvlRqzIzXQvcOZZ_UhDk8",
+            authDomain: "itsukibook-1001.firebaseapp.com",
+            projectId: "itsukibook-1001",
+            storageBucket: "itsukibook-1001.firebasestorage.app",
+            messagingSenderId: "173649948415",
+            appId: "1:173649948415:web:4f8117a112232a7f75e6ca"
+        };
+
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+        const db = firebase.firestore();
+
+        // 全域變量
+        let csvData = [];
+        let imageFiles = {};
+        let uploadQueue = [];
+        let currentBatch = 0;
+        let totalBatches = 0;
+        let isPaused = false;
+        let isStopped = false;
+        let stats = {
+            total: 0,
+            success: 0,
+            error: 0,
+            skipped: 0
+        };
+
+        // DOM 元素
+        const csvFile = document.getElementById('csvFile');
+        const imageFolder = document.getElementById('imageFolder');
+        const startNum = document.getElementById('startNum');
+        const endNum = document.getElementById('endNum');
+        const batchSize = document.getElementById('batchSize');
+        const startUpload = document.getElementById('startUpload');
+        const pauseUpload = document.getElementById('pauseUpload');
+        const resumeUpload = document.getElementById('resumeUpload');
+        const stopUpload = document.getElementById('stopUpload');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const statsContainer = document.getElementById('statsContainer');
+        const logContent = document.getElementById('logContent');
+
+        // CSV 解析
+        csvFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const csv = event.target.result;
+                    csvData = parseCSV(csv);
+                    addLog(`CSV檔案載入成功：${csvData.length} 筆資料`, 'info');
+                };
+                reader.readAsText(file, 'utf-8');
+            }
+        });
+
+        // 圖片資料夾選擇
+        imageFolder.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            imageFiles = {};
+            
+            files.forEach(file => {
+                const filename = file.name;
+                const match = filename.match(/^(\d+)\.jpg$/);
+                if (match) {
+                    const num = parseInt(match[1]);
+                    imageFiles[num] = file;
+                }
+            });
+            
+            addLog(`圖片資料夾載入成功：${Object.keys(imageFiles).length} 個圖片檔案`, 'info');
+        });
+
+        // 開始上傳
+        startUpload.addEventListener('click', async () => {
+            if (!csvData.length) {
+                addLog('請先上傳CSV檔案', 'error');
+                return;
+            }
+            if (!Object.keys(imageFiles).length) {
+                addLog('請先選擇圖片資料夾', 'error');
+                return;
+            }
+
+            // 準備上傳佇列
+            prepareUploadQueue();
+            
+            if (uploadQueue.length === 0) {
+                addLog('沒有找到可上傳的項目', 'error');
+                return;
+            }
+
+            // 顯示進度界面
+            progressContainer.style.display = 'block';
+            statsContainer.style.display = 'block';
+            startUpload.style.display = 'none';
+            pauseUpload.style.display = 'inline-block';
+            stopUpload.style.display = 'inline-block';
+
+            // 重置狀態
+            isPaused = false;
+            isStopped = false;
+            currentBatch = 0;
+            stats = { total: uploadQueue.length, success: 0, error: 0, skipped: 0 };
+            updateStats();
+
+            addLog(`開始批量上傳：共 ${uploadQueue.length} 個項目`, 'info');
+            
+            // 開始上傳
+            await processUploadQueue();
+        });
+
+        // 暫停上傳
+        pauseUpload.addEventListener('click', () => {
+            isPaused = true;
+            pauseUpload.style.display = 'none';
+            resumeUpload.style.display = 'inline-block';
+            addLog('上傳已暫停', 'info');
+        });
+
+        // 繼續上傳
+        resumeUpload.addEventListener('click', () => {
+            isPaused = false;
+            resumeUpload.style.display = 'none';
+            pauseUpload.style.display = 'inline-block';
+            addLog('繼續上傳', 'info');
+            processUploadQueue();
+        });
+
+        // 停止上傳
+        stopUpload.addEventListener('click', () => {
+            isStopped = true;
+            pauseUpload.style.display = 'none';
+            resumeUpload.style.display = 'none';
+            stopUpload.style.display = 'none';
+            startUpload.style.display = 'inline-block';
+            addLog('上傳已停止', 'info');
+        });
+
+        // 解析CSV
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const cols = line.split(',');
+                if (cols.length >= 2 && cols[0] && cols[1]) {
+                    data.push({
+                        id: parseInt(cols[0]),
+                        text: cols[1].trim(),
+                        format: cols[2] ? cols[2].trim() : 'jpg'
+                    });
+                }
+            }
+            
+            return data;
+        }
+
+        // 準備上傳佇列
+        function prepareUploadQueue() {
+            uploadQueue = [];
+            const start = parseInt(startNum.value);
+            const end = parseInt(endNum.value);
+            const batch = parseInt(batchSize.value);
+            
+            for (let i = start; i <= end; i++) {
+                const csvItem = csvData.find(item => item.id === i);
+                const imageFile = imageFiles[i];
+                
+                if (csvItem && imageFile) {
+                    uploadQueue.push({
+                        id: i,
+                        text: csvItem.text,
+                        file: imageFile,
+                        filename: `${i}.jpg`
+                    });
+                } else {
+                    addLog(`跳過編號 ${i}：${!csvItem ? '缺少語錄' : '缺少圖片'}`, 'info');
+                    stats.skipped++;
+                }
+            }
+            
+            totalBatches = Math.ceil(uploadQueue.length / batch);
+        }
+
+        // 處理上傳佇列
+        async function processUploadQueue() {
+            const batch = parseInt(batchSize.value);
+            
+            while (currentBatch * batch < uploadQueue.length && !isStopped) {
+                if (isPaused) {
+                    await new Promise(resolve => {
+                        const checkPause = () => {
+                            if (!isPaused || isStopped) {
+                                resolve();
+                            } else {
+                                setTimeout(checkPause, 100);
+                            }
+                        };
+                        checkPause();
+                    });
+                }
+                
+                if (isStopped) break;
+                
+                const startIndex = currentBatch * batch;
+                const endIndex = Math.min(startIndex + batch, uploadQueue.length);
+                const currentBatchItems = uploadQueue.slice(startIndex, endIndex);
+                
+                addLog(`處理批次 ${currentBatch + 1}/${totalBatches} (${startIndex + 1}-${endIndex})`, 'info');
+                
+                // 並行上傳當前批次
+                const promises = currentBatchItems.map(item => uploadSingleItem(item));
+                await Promise.allSettled(promises);
+                
+                currentBatch++;
+                updateProgress();
+                
+                // 批次間延遲
+                if (currentBatch < totalBatches && !isStopped) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+            
+            if (!isStopped) {
+                completeUpload();
+            }
+        }
+
+        // 上傳單個項目
+        async function uploadSingleItem(item) {
+            try {
+                // 檢查是否已存在
+                const existingQuery = await db.collection('images')
+                    .where('text', '==', item.text)
+                    .where('name', '==', item.filename)
+                    .get();
+                
+                if (!existingQuery.empty) {
+                    addLog(`跳過 ${item.filename}：已存在相同項目`, 'info');
+                    stats.skipped++;
+                    updateStats();
+                    return;
+                }
+                
+                // 上傳到 Storage
+                const storageRef = storage.ref(`images/${Date.now()}_${item.filename}`);
+                const snapshot = await storageRef.put(item.file);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                
+                // 儲存到 Firestore
+                await db.collection('images').add({
+                    name: item.filename,
+                    text: item.text,
+                    imageUrl: downloadURL,
+                    originalId: item.id,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                addLog(`✅ ${item.filename}: ${item.text.substring(0, 20)}...`, 'success');
+                stats.success++;
+                
+            } catch (error) {
+                addLog(`❌ ${item.filename}: ${error.message}`, 'error');
+                stats.error++;
+                console.error('Upload error:', error);
+            }
+            
+            updateStats();
+        }
+
+        // 更新進度
+        function updateProgress() {
+            const totalProcessed = currentBatch * parseInt(batchSize.value);
+            const progress = Math.min((totalProcessed / uploadQueue.length) * 100, 100);
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+            progressText.textContent = `已處理 ${Math.min(totalProcessed, uploadQueue.length)} / ${uploadQueue.length} 項目`;
+        }
+
+        // 更新統計
+        function updateStats() {
+            document.getElementById('totalCount').textContent = stats.total;
+            document.getElementById('successCount').textContent = stats.success;
+            document.getElementById('errorCount').textContent = stats.error;
+            document.getElementById('skippedCount').textContent = stats.skipped;
+        }
+
+        // 完成上傳
+        function completeUpload() {
+            progressBar.style.width = '100%';
+            progressBar.textContent = '100%';
+            progressText.textContent = '上傳完成！';
+            
+            pauseUpload.style.display = 'none';
+            resumeUpload.style.display = 'none';
+            stopUpload.style.display = 'none';
+            startUpload.style.display = 'inline-block';
+            
+            addLog(`🎉 批量上傳完成！成功：${stats.success}，失敗：${stats.error}，跳過：${stats.skipped}`, 'success');
+        }
+
+        // 添加日誌
+        function addLog(message, type = 'info') {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContent.appendChild(logEntry);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        // 頁面載入時檢查登入狀態
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                addLog('請先登入Firebase才能使用此功能', 'error');
+                // 可以加入登入界面或重導向到admin.html
+            } else {
+                addLog(`已登入：${user.email}`, 'success');
+            }
+        });
+    </script>
+</body>
+</html>
