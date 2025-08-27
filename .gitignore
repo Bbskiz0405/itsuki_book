@@ -1,1 +1,9 @@
+# Mac
 .DS_Store
+
+# Firebase
+.firebase/hosting.*.cache
+
+# Secrets
+serviceAccountKey.json
+.env
