@@ -1,9 +1,33 @@
-# Mac
-.DS_Store
+# 環境變數與敏感資訊
+.env
+serviceAccountKey.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # Firebase
+.firebase/
 .firebase/hosting.*.cache
+firebase-debug.log
+firestore-debug.log
 
-# Secrets
-serviceAccountKey.json
-.env
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

@@ -10,6 +10,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase 配置 -->
+    <script src="firebase-config.js"></script>
     
     <style>
         body {
@@ -216,21 +219,7 @@
     </div>
 
     <script>
-        // Firebase 配置
-        const firebaseConfig = {
-            apiKey: "AIzaSyC8nvSRxtfpXxQvlRqzIzXQvcOZZ_UhDk8",
-            authDomain: "itsukibook-1001.firebaseapp.com",
-            projectId: "itsukibook-1001",
-            storageBucket: "itsukibook-1001.firebasestorage.app",
-            messagingSenderId: "173649948415",
-            appId: "1:173649948415:web:4f8117a112232a7f75e6ca"
-        };
-
-        // 初始化 Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const storage = firebase.storage();
-        const db = firebase.firestore();
+        // Firebase 已在 firebase-config.js 中初始化
 
         // 全域變量
         let csvData = [];
@@ -526,14 +515,6 @@
             addLog(`🎉 批量上傳完成！成功：${stats.success}，失敗：${stats.error}，跳過：${stats.skipped}`, 'success');
         }
 
-        // 添加日誌
-        function addLog(message, type = 'info') {
-            const logEntry = document.createElement('div');
-            logEntry.className = `log-entry log-${type}`;
-            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logContent.appendChild(logEntry);
-            logContent.scrollTop = logContent.scrollHeight;
-        }
 
         // 頁面載入時檢查登入狀態
         auth.onAuthStateChanged((user) => {

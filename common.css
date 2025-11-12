@@ -1,0 +1,200 @@
+/* 共用樣式 */
+body {
+    text-align: center;
+    background: url('tool_img/back3.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: #fff;
+}
+
+/* 跑馬燈樣式 */
+.marquee {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    animation: marquee 15s linear infinite;
+    font-size: 16px;
+    color: #ffcc00;
+    padding: 8px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: transparent;
+}
+
+@keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* 內容容器 */
+.content-wrapper {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+h1 {
+    font-size: 48px;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+p {
+    font-size: 24px;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* 選單按鈕 */
+.menu-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: rgb(254, 150, 137);
+    border: none;
+    cursor: pointer;
+    z-index: 1100;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.menu-button div {
+    width: 30px;
+    height: 5px;
+    background-color: #fff;
+    border-radius: 2px;
+}
+
+.menu-button:hover div {
+    background-color: rgb(255, 200, 200);
+}
+
+/* 側邊選單容器 */
+.menu-container {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.menu-container h2 {
+    text-align: center;
+    padding: 10px 0;
+    margin: 0;
+    background-color: rgb(254, 150, 137);
+    color: #fff;
+    font-size: 18px;
+}
+
+/* 導航列表 */
+.nav-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+    background-color: #f5f5f5;
+}
+
+.nav-item img {
+    width: 28px;
+    height: 28px;
+    margin-right: 15px;
+}
+
+.nav-item span {
+    font-size: 16px;
+    color: #333;
+}
+
+/* 遮罩層 */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* 手機版調整 */
+@media (max-width: 768px) {
+    body {
+        background: url('tool_img/backm.png') no-repeat center center fixed;
+        background-size: cover;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    .menu-container {
+        width: 80%;
+        max-width: 300px;
+        right: -100%;
+    }
+
+    .menu-button {
+        top: 50px;
+    }
+
+    .marquee {
+        font-size: 14px;
+        padding: 6px 0;
+    }
+
+    .content-wrapper {
+        padding-bottom: 150px;
+    }
+
+    .nav-item {
+        padding: 12px 15px;
+    }
+
+    .nav-item img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .nav-item span {
+        font-size: 14px;
+    }
+}

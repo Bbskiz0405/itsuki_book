@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>圖片管理後台 - 登入</title>
-    <!-- 正確順序載入 compat 版本 Firebase SDK -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase 配置 -->
+    <script src="firebase-config.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -196,21 +199,7 @@
     </div>
 
     <script>
-        // Firebase 配置 - 請替換為您的配置
-        const firebaseConfig = {
-            apiKey: "AIzaSyC8nvSRxtfpXxQvlRqzIzXQvcOZZ_UhDk8",
-            authDomain: "itsukibook-1001.firebaseapp.com",
-            projectId: "itsukibook-1001",
-            storageBucket: "itsukibook-1001.firebasestorage.app",
-            messagingSenderId: "173649948415",
-            appId: "1:173649948415:web:4f8117a112232a7f75e6ca"
-};
-
-        // 初始化 Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const storage = firebase.storage();
-        const db = firebase.firestore();
+        // Firebase 已在 firebase-config.js 中初始化
 
         function loginUser(email, password) {
             document.getElementById('loginError').textContent = '';

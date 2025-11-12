@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Images collection - 圖片資料
+    match /images/{imageId} {
+      // 所有人都可以讀取圖片
+      allow read: if true;
+
+      // 只有認證用戶可以寫入（上傳、修改、刪除）
+      allow write: if request.auth != null;
+    }
+
+    // 預設規則：拒絕所有其他存取
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

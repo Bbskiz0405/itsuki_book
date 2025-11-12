@@ -4,7 +4,31 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "**/*.md",
+      "bot.py",
+      "data/**",
+      "old_ver/**"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|webp)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800, immutable"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      }
     ]
   }
 }
